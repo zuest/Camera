@@ -35,6 +35,16 @@
                 width: 70px;
                 margin: 15px;
             }
+            #uploadPreview {
+                border: 1px solid red;
+                width: 400px;
+                height: 400px;
+                overflow: hidden;
+            }
+            #uploadPreview img {
+                min-width: 400px;
+                min-height: 400px;
+            }
         }
     </style>
 </head>
@@ -80,10 +90,12 @@
 
 
     <div id='mobileView' class='mobileShow'>
-        <p>Take a photo</p>
-        <p id="supported"></p>
-        <input id="cameraFileInput" type="file" accept="image/*" capture>
-        <span id="output"></span>
+        <div style="text-align: center;margin-left: 20px;">
+            <h1>Take A Photo</h1>
+            <input type="file" id="file" accept="image/*" capture />
+            <div id="uploadPreview" style="margin-top:50px;">
+            </div>
+        </div>
     </div>
 
     <canvas class="is-hidden" id="canvas"></canvas>
@@ -202,20 +214,21 @@
             initializeCamera();
         })();
     } else {
-        // similar behavior as an HTTP redirect
-        window.location.replace("https://zuest.github.io/CameraTwo/");
-        // similar behavior as clicking on a link
-        window.location.href = "https://zuest.github.io/CameraTwo/";
+
+        var _URL = window.URL || window.webkitURL;
+
+        $("#file").change(function(e) {
+            var image, file;
+            if ((file = this.files[0])) {
+                image = new Image();
+                image.onload = function() {
+                    src = this.src;
+                    $('#uploadPreview').html('<img src="' + src + '"></div>');
+                    e.preventDefault();
+                }
+            };
+            image.src = _URL.createObjectURL(file);
+        });
 
     }
-
-
-
-    // add a small delay for the revokeObjectURL to work property
-    setTimeout(function() {
-        var isMobile = navigator.userAgentData.mobile;
-        if (isMobile) {
-            window.location.href = "https://zuest.github.io/CameraTwo/";
-        }
-    }, 1500);
 </script>
